@@ -1,0 +1,15 @@
+# secrets
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# reports & logs
+Logs/
+Reports/
+
+# IDE
+.idea/
