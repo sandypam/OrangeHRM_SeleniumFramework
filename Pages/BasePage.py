@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 from Utilities import configReader
 import logging
@@ -84,6 +85,15 @@ class BasePage:
             EC.visibility_of_element_located((by, value))
         )
 
+    def is_visible(self, locator_key, timeout=10):
+        try:
+            self.wait_for_visible(locator_key, timeout)
+            return True
+        except TimeoutException:
+            log.logger.info(f"Element not visible: {locator_key}")
+            return False
+
     def get_text(self, locator_key, timeout=10):
         el = self.wait_for_visible(locator_key, timeout)
         return el.text
+

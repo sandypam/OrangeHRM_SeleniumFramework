@@ -10,6 +10,11 @@ class LoginPage(BasePage):
         self.type("username_NAME", username)
         self.type("password_NAME", password)
         self.click("loginButton_XPATH")
+
+    def title(self):
         return self.get_text("pageTitle_XPATH")
+
+    def get_error_message(self):
+        return self.get_text("invalidLoginMessage_XPATH")
 
 
