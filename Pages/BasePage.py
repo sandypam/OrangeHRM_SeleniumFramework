@@ -37,9 +37,10 @@ class BasePage:
             f"Supported suffixes: {list(self.LOCATOR_MAP.keys())}"
         )
 
-    def _locator_value(self, locator_key: str) -> str:
+    def _locator_value(self, locator_key: str, **kwargs) -> str:
         """Read the locator value from config.ini using the provided key."""
-        return configReader.readConfig("Locators", locator_key)
+        raw = configReader.readConfig("Locators", locator_key)
+        return raw.format(**kwargs) if kwargs else raw
 
     def click(self, locator_key, timeout=10):
         by = self._by(locator_key)
@@ -86,12 +87,6 @@ class BasePage:
 
         log.logger.info(f"Move to locator: {locator_key} ({context})")
 
-    def wait_for_visible(self, locator_key, timeout=10):
-        by = self._by(locator_key)
-        value = self._locator_value(locator_key)
-        return WebDriverWait(self.driver, timeout).until(
-            EC.visibility_of_element_located((by, value))
-        )
 
     def is_visible(self, locator_key, timeout=10):
         try:
@@ -105,16 +100,56 @@ class BasePage:
         text = self.wait_for_visible(locator_key, timeout).text
         return text.strip() if strip else text
 
-    def wait_for_clickable(self, locator_key, timeout=10):
+    def wait_for_clickable(self, locator_key, timeout=10, **kwargs):
         """Wait until the element located by the key is clickable and return it."""
         by = self._by(locator_key)
         value = self._locator_value(locator_key)
-        return WebDriverWait(self.driver, timeout).until(
-            EC.element_to_be_clickable((by, value))
-        )
 
+        try:
+            return WebDriverWait(self.driver, timeout).until(
+                EC.element_to_be_clickable((by, value))
+            )
+        except TimeoutException as e:
+            raise TimeoutException(
+                f"Timeout after {timeout}s waiting for CLICKABLE: "
+                f"{locator_key} -> ({by}, {value})"
+            ) from e
 
+    def wait_for_visible(self, locator_key, timeout=10, **kwargs):
+        """Wait until the element located by the key is visible and return it."""
+        by = self._by(locator_key)
+        value = self._locator_value(locator_key, **kwargs)
 
+        try:
+            return WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located((by, value))
+            )
+        except TimeoutException as e:
+            raise TimeoutException(
+                f"Timeout after {timeout}s waiting for VISIBLE: "
+                f"{locator_key} -> ({by}, {value})"
+            ) from e
 
+    def wait_for_present(self, locator_key, timeout=10, **kwargs):
+        """Present in DOM (not necessarily visible)."""
+        by = self._by(locator_key)
+        value = self._locator_value(locator_key, **kwargs)
 
+        try:
+            return WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_element_located((by, value))
+            )
+        except TimeoutException as e:
+            raise TimeoutException(
+                f"Timeout after {timeout}s waiting for PRESENT: "
+                f"{locator_key} -> ({by}, {value})"
+            ) from e
 
+    def scroll_into_view(self, element):
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+
+    def scroll_to_top(self):
+        self.driver.execute_script("window.scrollTo(0, 0);")
+
+    def scroll_to_bottom(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")

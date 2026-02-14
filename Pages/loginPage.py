@@ -1,4 +1,6 @@
 from Pages.BasePage import BasePage
+from Utilities import configReader
+
 
 class LoginPage(BasePage):
 
@@ -10,6 +12,13 @@ class LoginPage(BasePage):
         self.type("username_NAME", username)
         self.type("password_NAME", password)
         self.click("loginButton_XPATH")
+
+    def logout(self):
+        self.click("userMenu_XPATH")
+        self.click("logout_XPATH")
+
+    def open(self):
+        self.driver.get(configReader.readConfig("basic info", "testsiteurl"))
 
     def title(self):
         return self.get_text("pageTitle_XPATH")
