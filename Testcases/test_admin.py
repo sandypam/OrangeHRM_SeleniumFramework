@@ -13,11 +13,11 @@ class TestAdmin(BaseTest):
     def test_search_for_user(self):
         log.logger.info("Test - search_for_user started")
 
-        def test_search_for_user(self):
-            admin = AdminPage(self.driver).open()
-            admin.search_user("Admin")
-            row = admin.find_user_row("Admin")
-            assert row is not None
+        admin = AdminPage(self.driver).open()
+        admin.search_user("Admin")
+        row = admin.find_user_row("Admin")
+
+        assert row is not None, "Expected to find 'Admin' in Admin table results"
 
         log.logger.info("Test - search_for_user ended")
 
