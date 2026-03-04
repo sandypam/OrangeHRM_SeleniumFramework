@@ -1,4 +1,4 @@
-# OrangeHRM Selenium Automation Framework
+# OrangeHRM_Python
 
 Selenium + pytest automation framework using Page Object Model.
 - Explicit waits

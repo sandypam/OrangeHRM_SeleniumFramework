@@ -1,4 +1,4 @@
-# Code Review: OrangeHRM Selenium Framework
+# Code Review: OrangeHRM_Python
 
 ## High-level architecture
 
