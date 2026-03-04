@@ -20,9 +20,6 @@ class LoginPage(BasePage):
     def open(self):
         self.driver.get(configReader.readConfig("basic info", "testsiteurl"))
 
-    def title(self):
-        return self.get_text("pageTitle_XPATH")
-
     def get_error_message(self):
         return self.get_text("invalidLoginMessage_XPATH")
 

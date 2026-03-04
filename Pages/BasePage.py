@@ -42,6 +42,17 @@ class BasePage:
         raw = configReader.readConfig("Locators", locator_key)
         return raw.format(**kwargs) if kwargs else raw
 
+    def get_page_title(self, timeout=10):
+        """Return the common OrangeHRM page title text (e.g., Dashboard, Admin)."""
+        return self.get_text("pageTitle_XPATH", timeout=timeout)
+
+    def assert_page_title(self, expected_title, timeout=10):
+        """Assert the current page title matches the expected title."""
+        actual_title = self.get_page_title(timeout=timeout)
+        assert actual_title == expected_title, (
+            f"Expected page title '{expected_title}' but found '{actual_title}'"
+        )
+
     def click(self, locator_key, timeout=10):
         by = self._by(locator_key)
         value = self._locator_value(locator_key)

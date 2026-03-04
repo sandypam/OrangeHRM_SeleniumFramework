@@ -39,7 +39,8 @@ def _get_creds():
 @pytest.fixture(scope="class")
 def logged_in(get_browser, request):
     username, password = get_credentials()
-    LoginPage(get_browser).login(username, password)
+    driver = get_browser
+    LoginPage(driver).login(username, password)
     return get_browser
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -64,5 +65,9 @@ def log_on_failure(request, get_browser):
             name=item.name,
             attachment_type=AttachmentType.PNG
         )
+
+@pytest.fixture
+def driver(request):
+    return request.cls.driver
 
 
