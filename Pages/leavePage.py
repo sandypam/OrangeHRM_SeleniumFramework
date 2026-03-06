@@ -1,5 +1,5 @@
 from Pages.BasePage import BasePage
 
 
-class leavePage(BasePage):
+class LeavePage(BasePage):
     pass
